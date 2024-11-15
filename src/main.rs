@@ -1,6 +1,4 @@
 #[derive(Debug, thiserror::Error, specta::Type)]
-#[serde(tag = "kind", content = "message")]
-#[serde(rename_all = "camelCase")]
 enum Error {
     #[error("io error: {0}")]
     Io(String),
