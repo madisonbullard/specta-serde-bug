@@ -31,7 +31,7 @@ impl serde::Serialize for Error {
 fn main() {
     assert_eq!(
         specta_typescript::export::<Error>(&Default::default()).unwrap(),
-        "export type Error = { code: \"apiError\", message: string } | { code: \"unauthorized\", message: string }".to_string()
+        "export type Error = { kind: \"io\", message: string } | { kind: \"utf8\", message: string }".to_string()
     );
     println!("ok!");
 }
