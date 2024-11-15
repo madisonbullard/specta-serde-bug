@@ -1,16 +1,17 @@
 #[derive(Debug, thiserror::Error, specta::Type)]
-pub enum Error {
-    #[error("API call failed: {0}")]
-    ApiError(String),
-    #[error("Unauthorized: {0}")]
-    Unauthorized(String),
+enum Error {
+    #[error("io error: {0}")]
+    Io(String),
+    #[error("failed to parse as string: {0}")]
+    Utf8(String),
 }
 
-#[derive(Debug, serde::Serialize)]
-#[serde(tag = "code", content = "message", rename_all = "camelCase")]
-pub enum ErrorKind {
-    ApiError(String),
-    Unauthorized(String),
+#[derive(serde::Serialize)]
+#[serde(tag = "kind", content = "message")]
+#[serde(rename_all = "camelCase")]
+enum ErrorKind {
+    Io(String),
+    Utf8(String),
 }
 
 impl serde::Serialize for Error {
@@ -20,8 +21,8 @@ impl serde::Serialize for Error {
     {
         let error_message = self.to_string();
         let error_kind = match self {
-            Self::ApiError(_) => ErrorKind::ApiError(error_message),
-            Self::Unauthorized(_) => ErrorKind::Unauthorized(error_message),
+            Self::Io(_) => ErrorKind::Io(error_message),
+            Self::Utf8(_) => ErrorKind::Utf8(error_message),
         };
         error_kind.serialize(serializer)
     }
