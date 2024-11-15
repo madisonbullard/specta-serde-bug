@@ -1,4 +1,6 @@
 #[derive(Debug, thiserror::Error, specta::Type)]
+#[serde(tag = "kind", content = "message")]
+#[serde(rename_all = "camelCase")]
 enum Error {
     #[error("io error: {0}")]
     Io(String),
@@ -31,7 +33,7 @@ impl serde::Serialize for Error {
 fn main() {
     assert_eq!(
         specta_typescript::export::<Error>(&Default::default()).unwrap(),
-        "export type Error = { kind: \"io\", message: string } | { kind: \"utf8\", message: string }".to_string()
+        "export type Error = { kind: \"io\"; message: string } | { kind: \"utf8\"; message: string }".to_string()
     );
     println!("ok!");
 }
